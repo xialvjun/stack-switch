@@ -1,0 +1,32 @@
+{
+  "name": "stack-switch",
+  "version": "0.0.1",
+  "description": "A plates stack alike version route Switch of react-router.",
+  "main": "lib/index.js",
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "prop-types": "^>=15",
+    "react": ">=15",
+    "react-router": ">=4"
+  },
+  "devDependencies": {
+    "@types/prop-types": "^15.5.2",
+    "@types/react": "^16.0.34",
+    "@types/react-router": "^4.0.20",
+    "typescript": "^2.6.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xialvjun/stack-switch.git"
+  },
+  "author": "xialvjun@live.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xialvjun/stack-switch/issues"
+  },
+  "homepage": "https://github.com/xialvjun/stack-switch#readme"
+}
