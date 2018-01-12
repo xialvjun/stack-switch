@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "A plates stack alike version route Switch of react-router.",
   "main": "lib/index.js",
-  "dependencies": {
-  },
+  "dependencies": {},
   "peerDependencies": {
     "prop-types": "^>=15",
     "react": ">=15",
