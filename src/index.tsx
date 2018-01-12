@@ -6,23 +6,24 @@ import { match, RouteComponentProps, RouteProps } from 'react-router';
 import { Location } from 'history';
 
 
-interface LRM {
+export interface LRM {
   loc: Location,
   route: RouteProps,
-  match: match<any>
+  match: match<any>,
+  key?: string,
 }
 
-function dedup(loc_route_match_s: LRM[], compare_match: (m1: match<any>, m2: match<any>) => boolean) {
+function dedup(loc_route_match_s: LRM[]) {
   return loc_route_match_s.reduce((acc: LRM[], lrm) => {
     const last = acc[acc.length - 1];
-    if (last && last.route == lrm.route && compare_match(last.match, lrm.match)) {
+    if (last && last.key == lrm.key) {
       return acc.slice(0, -1).concat(lrm);
     }
     return acc.concat(lrm);
   }, []);
 }
 
-function match_route(loc: Location, routes: RouteProps[]): LRM {
+function match_route(loc: Location, routes: RouteProps[], get_key: (lrm: LRM) => string): LRM {
   let match = null, index = -1;
   let routes_length = routes.length;
   while (!match && index < routes_length) {
@@ -30,7 +31,9 @@ function match_route(loc: Location, routes: RouteProps[]): LRM {
     match = matchPath(loc.pathname, routes[index]);
   }
   let route = routes[index];
-  return { loc, route, match };
+  const lrm: LRM = { loc, route, match };
+  lrm.key = get_key(lrm);
+  return lrm;
 }
 
 function location_is_equal(l1: Location, l2: Location): boolean {
@@ -42,7 +45,7 @@ function location_is_equal(l1: Location, l2: Location): boolean {
 
 export interface StackSwitchProps extends RouteComponentProps<any> {
   routes: RouteProps[]
-  compare_match: (m1: match<any>, m2: match<any>) => boolean
+  get_key: (loc_route_match: LRM) => string
   max_layer: number
   wrapper: React.ReactElement<any>
 }
@@ -52,7 +55,7 @@ class CleanStackSwitch extends React.Component<StackSwitchProps, { lrms: LRM[] }
   constructor(props: StackSwitchProps) {
     super(props);
     this.routes = props.routes;
-    const loc_route_match = match_route(props.location, this.routes);
+    const loc_route_match = match_route(props.location, this.routes, props.get_key);
     this.state = { lrms: [loc_route_match] };
   }
   componentWillReceiveProps(nextProps: StackSwitchProps) {
@@ -60,7 +63,7 @@ class CleanStackSwitch extends React.Component<StackSwitchProps, { lrms: LRM[] }
     const next_loc = nextProps.location;
     if (next_loc != this_loc) {
       const old_lrms = this.state.lrms;
-      const lrm = match_route(next_loc, this.routes);
+      const lrm = match_route(next_loc, this.routes, nextProps.get_key);
 
       const action = nextProps.history.action;
       if (action === 'PUSH') {
@@ -74,32 +77,31 @@ class CleanStackSwitch extends React.Component<StackSwitchProps, { lrms: LRM[] }
     }
   }
   render() {
-    const { compare_match, max_layer } = this.props;
+    const { max_layer } = this.props;
     const { lrms } = this.state;
-    const to_render_lrms = dedup(lrms, compare_match).slice(0 - max_layer);
-    const will_render = to_render_lrms.map((lrm: LRM, idx) => <Route key={idx} {...lrm.route} location={lrm.loc}/>);
+    const to_render_lrms = dedup(lrms).slice(0 - max_layer);
+    const will_render = to_render_lrms.map((lrm: LRM, idx) => <Route key={lrms.indexOf(lrm) + ':' + lrm.key} {...lrm.route} location={lrm.loc}/>);
 
     let { wrapper } = this.props;
     if (!wrapper && !React.Fragment) {
       wrapper = <div></div>
     }
     if (!wrapper) {
-      return will_render
+      return will_render;
     }
-    return React.cloneElement(wrapper, null, ...will_render);
+    return React.cloneElement(wrapper, null, will_render);
   }
   static propTypes = {
     routes: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
-    compare_match: PropTypes.func.isRequired,
+    get_key: PropTypes.func.isRequired,
     max_layer: PropTypes.number.isRequired,
     wrapper: PropTypes.element,
   }
   static defaultProps = {
-    compare_match: (m1: match<any>, m2: match<any>) => m1.url === m2.url,
+    get_key: (loc_route_match: LRM) => loc_route_match.match.url,
     max_layer: 5,
   }
 }
 
 
 export const StackSwitch = withRouter(CleanStackSwitch);
-export default StackSwitch;
