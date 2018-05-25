@@ -1,19 +1,19 @@
 {
   "name": "stack-switch",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A plates stack alike version route Switch of react-router.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {},
   "peerDependencies": {
-    "prop-types": ">=15",
-    "react": ">=15",
+    "react": ">=15 <17",
     "react-router": ">=4"
   },
   "devDependencies": {
     "@types/prop-types": "^15.5.3",
     "@types/react": "^16.3.14",
     "@types/react-dom": "^16.0.5",
+    "@types/react-router": "^4.0.25",
     "@types/react-router-dom": "^4.2.6",
     "typescript": "^2.8.3"
   },
