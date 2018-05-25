@@ -58,3 +58,7 @@ typings/
 .env
 
 lib/
+package-lock.json
+
+.vscode/
+yarn.lock
