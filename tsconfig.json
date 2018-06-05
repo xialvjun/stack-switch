@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
-    "declaration": true,
     "jsx": "react",
     "lib": ["dom", "es2015"],
-    "module": "es6",
-    "outDir": "lib",
+    "moduleResolution": "node",
     "target": "es5"
-  }
+  },
+  "include": ["src/**/*"]
 }
