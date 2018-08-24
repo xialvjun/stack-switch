@@ -72,6 +72,10 @@ export interface StackSwitchProps extends RouteComponentProps<any> {
   wrapper?: ReactElement<any> | ((will_render: ReactNode[]) => ReactNode);
 }
 
+function Noop() {
+  return null;
+}
+
 class CleanStackSwitch extends React.Component<
   StackSwitchProps,
   { lrmks: LRMK[] }
@@ -79,7 +83,7 @@ class CleanStackSwitch extends React.Component<
   routes: RouteProps[];
   constructor(props: StackSwitchProps) {
     super(props);
-    this.routes = props.routes;
+    this.routes = props.routes.concat({ path: "*", component: Noop });
     const loc_route_match_key = match_route(
       props.location,
       this.routes,

@@ -1,6 +1,6 @@
 {
   "name": "stack-switch",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A plates stack alike version route Switch of react-router.",
   "repository": "github:xialvjun/stack-switch",
   "keywords": [
